@@ -42,62 +42,118 @@ const conf = { encoding: 'utf8' };
 // случайным образом распределяя 3 покемонов и переданного списка
 // в  созданные папки
 
-module.exports.hide = (url, list) => {
-  let nameRandomFolder = getRandomNumberArray();
-  let newList = getRandomPokemonArray(list);
+// module.exports.hide = (url, list) => {
+//   let nameRandomFolder = getRandomNumberArray();
+//   let newList = getRandomPokemonArray(list);
 
-  const AMOUNT_POKEMON = 3;
+//   const AMOUNT_POKEMON = 3;
+//   const AMOUNT_FOLDER  = 10;
+
+//   for (let i = 0; i < AMOUNT_FOLDER; i++) {
+//     fs.mkdir(`${url}0${i+1}`, (err) => {
+//       if (err) console.log(err);
+//     });
+//   }
+
+//   function createPokemonFile(number) {
+//     for (let i = 0; i < number; i++) {
+//       fs.writeFile(`${url}0${nameRandomFolder[i]}/pokemon.txt`, `${newList[i].name} | ${newList[i].lvl}`, conf)
+//     }
+//   }
+
+//   if (newList.length < AMOUNT_POKEMON) {
+//     createPokemonFile(newList.length);
+//   } else {
+//     createPokemonFile(AMOUNT_POKEMON);
+//   }
+
+
+//   for (let i = 0; i < newList.length; i++) {
+//     console.log(`Покемон ${newList[i].name}, уровнем ${newList[i].lvl}, спрятан в папкаке: 0${nameRandomFolder[i]}`);
+//     console.log('-----------------------------------------------------');
+//   }
+// };
+
+// модуль seek ищет покемонов в указанной папке и возвращает
+// список найденных покемоной
+
+// module.exports.seek = (src) => {
+//   let list = [];
+
+//   fs.readdir(src, (err, folders) => {
+//     if (err) console.log(err);
+
+//     for (let folder of folders) {
+//       fs.readdir(`${src}${folder}`, (err, files) => {
+//         if (err) console.log(err);
+
+//         for (let file of files) {
+//           fs.readFile(`${src}${folder}/${file}`, conf, (err, data) => {
+//             if (err) console.log(err);
+
+//             // list.push(data);
+
+//             console.log(data);
+//           })
+//         }
+//       })
+
+//     }
+
+//   })
+
+// }
+
+
+
+
+function createFolders({url, newList}) {
   const AMOUNT_FOLDER  = 10;
 
   for (let i = 0; i < AMOUNT_FOLDER; i++) {
-    fs.mkdir(`${url}0${i+1}`);
+    fs.mkdir(`${url}0${i+1}`, (err) => {
+      if (err) console.log(err);
+    });
   }
 
-  function createPokemonFile(number) {
-    for (let i = 0; i < number; i++) {
+  return {url, newList};
+}
+
+function createFiles({url, newList}) {
+  const AMOUNT_POKEMON = 3;
+  let lengthList = newList.length;
+  let nameRandomFolder = getRandomNumberArray();
+
+  function createPokemonFile(url, newList) {
+    for (let i = 0; i < newList.length; i++) {
       fs.writeFile(`${url}0${nameRandomFolder[i]}/pokemon.txt`, `${newList[i].name} | ${newList[i].lvl}`, conf)
     }
   }
 
   if (newList.length < AMOUNT_POKEMON) {
-    createPokemonFile(newList.length);
+    createPokemonFile(url, AMOUNT_POKEMON);
   } else {
-    createPokemonFile(AMOUNT_POKEMON);
+    createPokemonFile(url, newList);
   }
 
+  return {newList, nameRandomFolder};
+}
 
+function viewResult({newList, nameRandomFolder}) {
   for (let i = 0; i < newList.length; i++) {
     console.log(`Покемон ${newList[i].name}, уровнем ${newList[i].lvl}, спрятан в папкаке: 0${nameRandomFolder[i]}`);
     console.log('-----------------------------------------------------');
   }
-};
+}
 
-// модуль seek ищет покемонов в указанной папке и возвращает
-// список найденных покемоной
+module.exports.hide = (url, list) => {
+  let nameRandomFolder = getRandomNumberArray();
+  let newList = getRandomPokemonArray(list);
 
-module.exports.seek = (src) => {
-  let list = [];
-
-  fs.readdir(src, (err, folders) => {
-    if (err) console.log(err);
-
-    for (let folder of folders) {
-      fs.readdir(`${src}${folder}`, (err, files) => {
-        if (err) console.log(err);
-
-
-        for (let file of files) {
-          fs.readFile(`${src}${folder}/${file}`, conf, (err, data) => {
-            if (err) console.log(err);
-
-            // list.push(data);
-
-            console.log(data);
-          })
-        }
-      })
-
-    }
-
+  return new Promise((resolve, reject) => {
+    resolve({url, newList});
   })
+  .then(createFolders)
+  .then(createFiles)
+  .then(viewResult)
 }
