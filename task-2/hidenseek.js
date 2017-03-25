@@ -38,6 +38,9 @@ function getRandomPokemonArray(list) {
 const fs = require('fs');
 const conf = { encoding: 'utf8' };
 
+// Модуль hide создаёт 10 папок по указанному пути
+// случайным образом распределяя 3 покемонов и переданного списка
+// в  созданные папки
 
 module.exports.hide = (url, list) => {
   let nameRandomFolder = getRandomNumberArray();
@@ -69,11 +72,32 @@ module.exports.hide = (url, list) => {
   }
 };
 
-// module.exports.seek = function(url, list) {
-//   const conf = { encoding: 'utf8' };
+// модуль seek ищет покемонов в указанной папке и возвращает
+// список найденных покемоной
 
-//   fs.readFile(url, conf, (err, data) => {
-//     if (err) throw err;
-//     console.log(data);
-//   });
-// }
+module.exports.seek = (src) => {
+  let list = [];
+
+  fs.readdir(src, (err, folders) => {
+    if (err) console.log(err);
+
+    for (let folder of folders) {
+      fs.readdir(`${src}${folder}`, (err, files) => {
+        if (err) console.log(err);
+
+
+        for (let file of files) {
+          fs.readFile(`${src}${folder}/${file}`, conf, (err, data) => {
+            if (err) console.log(err);
+
+            // list.push(data);
+
+            console.log(data);
+          })
+        }
+      })
+
+    }
+
+  })
+}
