@@ -11,9 +11,13 @@ let list = [
   {name : 'Прокопович', lvl : 15}
 ];
 
-hidenseek.hide('./field/', list);
+// hidenseek.hide('./field/', list);
 
 // hidenseek.seek('./field/');
+
+hidenseek.seek('./field/');
+
+// console.log(process.argv)
 
 // process.argv.forEach((val, index) => {
 //   console.log(`${index}: ${val}`);

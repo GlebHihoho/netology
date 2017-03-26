@@ -42,71 +42,6 @@ const conf = { encoding: 'utf8' };
 // случайным образом распределяя 3 покемонов и переданного списка
 // в  созданные папки
 
-// module.exports.hide = (url, list) => {
-//   let nameRandomFolder = getRandomNumberArray();
-//   let newList = getRandomPokemonArray(list);
-
-//   const AMOUNT_POKEMON = 3;
-//   const AMOUNT_FOLDER  = 10;
-
-//   for (let i = 0; i < AMOUNT_FOLDER; i++) {
-//     fs.mkdir(`${url}0${i+1}`, (err) => {
-//       if (err) console.log(err);
-//     });
-//   }
-
-//   function createPokemonFile(number) {
-//     for (let i = 0; i < number; i++) {
-//       fs.writeFile(`${url}0${nameRandomFolder[i]}/pokemon.txt`, `${newList[i].name} | ${newList[i].lvl}`, conf)
-//     }
-//   }
-
-//   if (newList.length < AMOUNT_POKEMON) {
-//     createPokemonFile(newList.length);
-//   } else {
-//     createPokemonFile(AMOUNT_POKEMON);
-//   }
-
-
-//   for (let i = 0; i < newList.length; i++) {
-//     console.log(`Покемон ${newList[i].name}, уровнем ${newList[i].lvl}, спрятан в папкаке: 0${nameRandomFolder[i]}`);
-//     console.log('-----------------------------------------------------');
-//   }
-// };
-
-// модуль seek ищет покемонов в указанной папке и возвращает
-// список найденных покемоной
-
-// module.exports.seek = (src) => {
-//   let list = [];
-
-//   fs.readdir(src, (err, folders) => {
-//     if (err) console.log(err);
-
-//     for (let folder of folders) {
-//       fs.readdir(`${src}${folder}`, (err, files) => {
-//         if (err) console.log(err);
-
-//         for (let file of files) {
-//           fs.readFile(`${src}${folder}/${file}`, conf, (err, data) => {
-//             if (err) console.log(err);
-
-//             // list.push(data);
-
-//             console.log(data);
-//           })
-//         }
-//       })
-
-//     }
-
-//   })
-
-// }
-
-
-
-
 function createFolders({url, newList}) {
   const AMOUNT_FOLDER  = 10;
 
@@ -143,7 +78,9 @@ function viewResult({newList, nameRandomFolder}) {
   for (let i = 0; i < newList.length; i++) {
     console.log(`Покемон ${newList[i].name}, уровнем ${newList[i].lvl}, спрятан в папкаке: 0${nameRandomFolder[i]}`);
     console.log('-----------------------------------------------------');
-  }
+  };
+
+  return newList;
 }
 
 module.exports.hide = (url, list) => {
@@ -157,3 +94,101 @@ module.exports.hide = (url, list) => {
   .then(createFiles)
   .then(viewResult)
 }
+
+
+// модуль seek ищет покемонов в указанной папке и возвращает
+// список найденных покемоной
+
+function foldersSearch(src) {
+  fs.readdir(src, (err, folders) => {
+    if (err) console.log(err);
+
+    folders.forEach(folder => {
+      fs.readdir(`${src}${folder}`, (err, files) => {
+        if (err) console.log(err);
+
+        files.forEach(file => {
+          fs.readFile(`${src}${folder}/${file}`, conf, (err, data) => {
+            if (err) console.log(err);
+
+            console.log(data);
+          })
+        })
+      })
+    })
+  })
+}
+
+module.exports.seek = (src) => {
+  return new Promise((resolve, reject) => {
+    resolve(src);
+  })
+  .then(foldersSearch)
+  .catch((err) => console.log(err))
+}
+
+
+// function foldersSearch(src) {
+//   fs.readdir(src, (err, folders) => {
+//     if (err) console.log(err);
+
+//     return new Promise((resolve, reject) => {
+//       resolve({src, folders});
+//     })
+//     .then(searchFileInFolders)
+//     .catch((err) => console.log(err))
+//   })
+// }
+
+// function searchFileInFolders({src, folders}) {
+//   for (let folder of folders) {
+//     fs.readdir(`${src}${folder}`, (err, files) => {
+//       if (err) console.log(err);
+
+//       return new Promise((resolve, reject) => {
+//         resolve({src, folder, files})
+//       })
+//       .then(viewPokemonInFiles)
+//     })
+//   }
+// }
+
+// function viewPokemonInFiles({src, folder, files}) {
+//   for (let file of files) {
+//     fs.readFile(`${src}${folder}/${file}`, conf, (err, data) => {
+//       if (err) console.log(err);
+
+//       return new Promise((resolve, reject) => {
+//         resolve(data);
+//       })
+//       .then((data) => console.log(data))
+//     })
+//   }
+// }
+
+// module.exports.seek = (src) => {
+//   return new Promise((resolve, reject) => {
+//     resolve(src);
+//   })
+//   .then(foldersSearch)
+//   .catch((err) => console.log(err));
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
