@@ -128,6 +128,8 @@ module.exports.seek = (src) => {
 }
 
 
+// --------------------------------------
+
 // function foldersSearch(src) {
 //   fs.readdir(src, (err, folders) => {
 //     if (err) console.log(err);
@@ -173,7 +175,6 @@ module.exports.seek = (src) => {
 //   .then(foldersSearch)
 //   .catch((err) => console.log(err));
 // }
-
 
 
 
