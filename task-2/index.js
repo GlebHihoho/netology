@@ -15,11 +15,6 @@ let list = [
 
 // hidenseek.seek('./field/');
 
-hidenseek.seek('./field/');
 
-// console.log(process.argv)
 
-// process.argv.forEach((val, index) => {
-//   console.log(`${index}: ${val}`);
-// });
 
