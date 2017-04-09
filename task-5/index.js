@@ -2,53 +2,41 @@
 
 const HTTP   = require('http');
 const SERVER = HTTP.createServer();
-const URL    = 'http://netology.tomilomark.ru';
 const PORT   = 3000;
 const QUERYSTRING = require('querystring');
 
 const OPTIONS = {
-  hostname: '127.0.0.1',
-  port: 3000,
+  hostname: 'netology.tomilomark.ru',
+  port: 80,
   path: '/api/v1/hash',
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'firstname' : 'mark'
+    'firstname' : 'Gleb'
   }
 };
 
 function handler(request, response) {
   let data = request.headers.firstname;
   response.writeHead(200);
-  response.write(data);
+  // response.write(data);
   response.end();
 
+  const req = HTTP.request(OPTIONS, res => {
+    let data = '';
+    res.setEncoding('utf8');
+    res.on('data', (chunk) => data += chunk);
+    res.on('end', () => console.log(data));
+  });
+
+
+  req.end();
 }
 
-SERVER.on('error', err => console.log(err));
+SERVER.on('error', error => console.log(error));
 SERVER.on('request', handler);
 SERVER.listen(PORT);
 
-const req = HTTP.request(URL);
-
-req.on('error', () => console.log(err));
-
-req.on('response', response => {
-  let data = '';
-
-  response.on('data', chunk => data += chunk);
-  response.end(() => console.log(data + 'asd'))
-})
-
-req.end();
-
-
-
-// function handler(req, res) {
-//   res.writeHead(200, 'OK', { 'Content-Type' : 'application/x-www-form-urlencoded' });
-//   res.write(`${JSON.stringify(req.headers)}`);
-//   res.end();
-// }
 
 
 
