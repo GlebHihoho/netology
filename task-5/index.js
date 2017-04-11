@@ -24,18 +24,30 @@ SERVER
 
 function handler(request, response) {
   let data = '';
+  let resData = '';
 
   request.on('error', err => console.error(err));
   request.on('data', chunk => data += chunk);
   request.on('end', () => {
-    // console.log(JSON.stringify(request.headers));
-    // console.log(request.url);
-    // console.log(request.method);
+    const NAME = JSON.stringify(request.headers.firstname);
 
-    response.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
-    response.write(`${data}asd`);
-    response.end();
+    const requestUP = HTTP.request(OPTIONS, responseUP => {
+      console.log(`STATUS: ${responseUP.statusCode}`);
+
+      responseUP.on('data', chunk => resData += chunk);
+      responseUP.on('end', () => console.log(resData));
+
+    });
+
+    response.writeHead(200, 'OK', {'Content-Type': 'application/json'});
+    requestUP.write(resData);
+    requestUP.end();
+
   });
+
+  // response.writeHead(200,{'Content-Type': 'application/json'});
+  response.write(data);
+  response.end();
 }
 
 
