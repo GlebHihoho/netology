@@ -1,13 +1,10 @@
 'use strict';
 
 const HTTP   = require('http');
-const SERVER = HTTP.createServer();
-const URL    = 'http://netology.tomilomark.ru';
 const PORT   = 3000;
-const QUERYSTRING = require('querystring');
 
 const OPTIONS = {
-  hostname: '127.0.0.1',
+  hostname: 'netology.tomilomark.ru',
   port: 3000,
   path: '/api/v1/hash',
   method: 'POST',
@@ -17,40 +14,29 @@ const OPTIONS = {
   }
 };
 
+const SERVER = HTTP.createServer();
+
+SERVER
+    .listen(PORT)
+    .on('error', error => console.log(error))
+    .on('request', handler)
+    .on('listening', () => console.log('Start HTTP on port %d', PORT));
+
 function handler(request, response) {
-  let data = request.headers.firstname;
-  response.writeHead(200);
-  response.write(data);
-  response.end();
-
-}
-
-SERVER.on('error', err => console.log(err));
-SERVER.on('request', handler);
-SERVER.listen(PORT);
-
-const req = HTTP.request(URL);
-
-req.on('error', () => console.log(err));
-
-req.on('response', response => {
   let data = '';
 
-  response.on('data', chunk => data += chunk);
-  response.end(() => console.log(data + 'asd'))
-})
+  request.on('error', err => console.error(err));
+  request.on('data', chunk => data += chunk);
+  request.on('end', () => {
+    // console.log(JSON.stringify(request.headers));
+    // console.log(request.url);
+    // console.log(request.method);
 
-req.end();
-
-
-
-// function handler(req, res) {
-//   res.writeHead(200, 'OK', { 'Content-Type' : 'application/x-www-form-urlencoded' });
-//   res.write(`${JSON.stringify(req.headers)}`);
-//   res.end();
-// }
-
-
+    response.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
+    response.write(`${data}asd`);
+    response.end();
+  });
+}
 
 
 
