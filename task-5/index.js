@@ -10,7 +10,7 @@ const OPTIONS = {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'firstname' : 'mark'
+    'firstname' : 'Gleb'
   }
 };
 
@@ -23,30 +23,32 @@ SERVER
     .on('listening', () => console.log('Start HTTP on port %d', PORT));
 
 function handler(request, response) {
-  let data = '';
-  let resData = '';
+  let lastName  = '';
+  let firstName = '';
+  let key       = '';
 
   request.on('error', err => console.error(err));
-  request.on('data', chunk => data += chunk);
+  request.on('data', chunk => lastName += chunk);
   request.on('end', () => {
-    const NAME = JSON.stringify(request.headers.firstname);
 
     const requestUP = HTTP.request(OPTIONS, responseUP => {
       console.log(`STATUS: ${responseUP.statusCode}`);
+      let name = requestUP.getHeader('firstname');
 
-      responseUP.on('data', chunk => resData += chunk);
-      responseUP.on('end', () => console.log(resData));
+      responseUP.on('data', chunk => key += chunk);
 
+      responseUP.on('end', () => {
+        console.log(`firstName : ${name}`);
+        console.log(`lastName  : ${JSON.parse(lastName).lastName}`);
+        console.log(`secretKey : ${JSON.parse(key).hash}`);
+      });
     });
 
-    response.writeHead(200, 'OK', {'Content-Type': 'application/json'});
-    requestUP.write(resData);
+    requestUP.write(lastName);
     requestUP.end();
-
   });
 
-  // response.writeHead(200,{'Content-Type': 'application/json'});
-  response.write(data);
+  response.writeHead(200,{'Content-Type': 'application/json'});
   response.end();
 }
 
