@@ -36,7 +36,6 @@ function handler(request, response) {
       let name = requestUP.getHeader('firstname');
 
       responseUP.on('data', chunk => key += chunk);
-
       responseUP.on('end', () => {
         console.log(`firstName : ${name}`);
         console.log(`lastName  : ${JSON.parse(lastName).lastName}`);
@@ -48,7 +47,7 @@ function handler(request, response) {
     requestUP.end();
   });
 
-  response.writeHead(200,{'Content-Type': 'application/json'});
+  response.writeHead(200, 'OK', {'Content-Type': 'application/json'});
   response.end();
 }
 
