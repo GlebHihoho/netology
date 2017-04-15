@@ -44,10 +44,10 @@ SERVER.get('/users/*', (request, response) => {
 });
 
 SERVER.delete(`/users/*`, (request, response) => {
-  FS.unlink('users.json', (request, response) => {
+  FS.unlink('users.json', () => {
     console.log('Файл удалён');
+    response.send('Файл удалён');
   })
-  response.send('Файл удалён');
 });
 
 SERVER.all('*', (request, response) => {
