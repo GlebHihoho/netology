@@ -18,31 +18,36 @@ SERVER.use(BODY_PARSER.json());
 SERVER.use(BODY_PARSER.urlencoded({"extended": true}));
 
 SERVER.post('/users/*', (request, response) => {
-  response.send(
-    FS.writeFile('users.json', '', CONF, () => {
+  FS.writeFile('users.json', '', CONF, () => {
       console.log('Файл создан');
-    })
-  )
+      response.send('Файл создан')
+  })
 });
 
-SERVER.put('/users/:name/:score', (request, response) => {
+SERVER.put('/users/:name&:score', (request, response) => {
   let name = request.params.name;
   let score = request.params.score;
 
-  response.send(
-    FS.appendFile('users.json', `{"name" : "${name}", "score" : "${score}"}`, CONF, () => {
-      console.log(`Свойство name и score добавлено`)
-    })
-  )
+  FS.appendFile('users.json', `{"name" : "${name}", "score" : "${score}"}`, CONF, () => {
+      console.log(`Свойство name и score добавлено`);
+      response.send(`Свойство name и score добавлено`)
+  })
+
 });
 
 SERVER.get('/users/*', (request, response) => {
-  response.send(
-    FS.readFile('users.json', CONF, (err, data) => {
-      if (err) throw err;
-      console.log(`Файл содержит ${data}`);
-    })
-  )
+  FS.readFile('users.json', CONF, (err, data) => {
+    if (err) throw err;
+    console.log(`Файл содержит ${data}`);
+    response.send(data)
+  })
+});
+
+SERVER.delete(`/users/*`, (request, response) => {
+  FS.unlink('users.json', (request, response) => {
+    console.log('Файл удалён');
+  })
+  response.send('Файл удалён');
 });
 
 SERVER.all('*', (request, response) => {
