@@ -10,7 +10,7 @@ const OPTIONS = {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'firstname' : 'Gleb'
+    // 'firstname' : 'Gleb'
   }
 };
 
@@ -24,7 +24,6 @@ SERVER
 
 function handler(request, response) {
   let lastName  = '';
-  let firstName = '';
   let key       = '';
 
   request.on('error', err => console.error(err));
@@ -33,13 +32,16 @@ function handler(request, response) {
 
     const requestUP = HTTP.request(OPTIONS, responseUP => {
       console.log(`STATUS: ${responseUP.statusCode}`);
-      let name = requestUP.getHeader('firstname');
+      let name = request.headers.firstname;
 
       responseUP.on('data', chunk => key += chunk);
       responseUP.on('end', () => {
         console.log(`firstName : ${name}`);
         console.log(`lastName  : ${JSON.parse(lastName).lastName}`);
         console.log(`secretKey : ${JSON.parse(key).hash}`);
+        response.writeHead(200, 'OK', {'Content-Type': 'application/json'});
+        response.write(`firstName : ${name}, lastName  : ${JSON.parse(lastName).lastName}, secretKey : ${JSON.parse(key).hash}`);
+        response.end();
       });
     });
 
@@ -47,6 +49,4 @@ function handler(request, response) {
     requestUP.end();
   });
 
-  response.writeHead(200, 'OK', {'Content-Type': 'application/json'});
-  response.end();
 }
