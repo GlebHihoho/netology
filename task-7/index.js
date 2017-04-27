@@ -36,25 +36,30 @@ APP.all('/sub/*/*', (request, response) => {
 
 // POST
 
-function middleware(request, response, next) {
-  let key  = request.params.keys;
+// function middleware(request, response, next) {
+//   let key  = request.params.keys;
 
-  if (request.headers.key === undefined) {
-    response.send('401');
-  }
+//   if (request.headers.key === undefined) {
+//     response.send('401');
+//   }
 
-  next();
-}
+//   next();
+// }
 
-APP.post('/post/:keys', middleware, (request, response) => {
-  let data = '';
+APP.post('/post', (request, response) => {
+  // let data = '';
+  let data = JSON.stringify(request.body);
 
-  request.on('data', chank => data += chank);
-  request.on('end', () => {
-    if (data === '') response.send('404 Not Found');
+  console.log(request.body.lastName);
+  response.send(`${data}`);
 
-    response.status(200).send(`${data}`);
-  })
+
+  // request.on('data', chank => data += chank);
+  // request.on('end', () => {
+  //   if (data === '') response.send('404 Not Found');
+
+  //   response.status(200).send(`${data}`);
+  // })
 });
 
 APP.listen(PORT, () => console.log(`Start Server / PORT ${PORT}`));
