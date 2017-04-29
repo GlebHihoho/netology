@@ -23,4 +23,8 @@ io.on('connection', socket => {
       username: socket.id,
   });
 
+  socket.on('disconnect', () => {
+    io.sockets.emit('disc', socket.id);
+  });
+
 });
